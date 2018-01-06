@@ -1,0 +1,173 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="StockDataModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Companies">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="CompanyName" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'D:\DEVEXTREME\DEMOS\STOCKMARKET\APP_DATA\STOCKDATA.MDF.dbo.StockData' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="StockData">
+          <Key>
+            <PropertyRef Name="CompanyID" />
+            <PropertyRef Name="Date" />
+            <PropertyRef Name="Price" />
+            <PropertyRef Name="OpenP" />
+            <PropertyRef Name="CloseP" />
+            <PropertyRef Name="HighP" />
+            <PropertyRef Name="LowP" />
+            <PropertyRef Name="Volumne" />
+          </Key>
+          <Property Name="CompanyID" Type="int" Nullable="false" />
+          <Property Name="Date" Type="datetime" Nullable="false" />
+          <Property Name="Price" Type="money" Nullable="false" />
+          <Property Name="OpenP" Type="money" Nullable="false" />
+          <Property Name="CloseP" Type="money" Nullable="false" />
+          <Property Name="HighP" Type="money" Nullable="false" />
+          <Property Name="LowP" Type="money" Nullable="false" />
+          <Property Name="Volumne" Type="int" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_StockData_Companies">
+          <End Role="Companies" Type="Self.Companies" Multiplicity="1" />
+          <End Role="StockData" Type="Self.StockData" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Companies">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="StockData">
+              <PropertyRef Name="CompanyID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="StockDataModelStoreContainer">
+          <EntitySet Name="Companies" EntityType="Self.Companies" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="StockData" EntityType="Self.StockData" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [StockData].[CompanyID] AS [CompanyID], 
+    [StockData].[Date] AS [Date], 
+    [StockData].[Price] AS [Price], 
+    [StockData].[OpenP] AS [OpenP], 
+    [StockData].[CloseP] AS [CloseP], 
+    [StockData].[HighP] AS [HighP], 
+    [StockData].[LowP] AS [LowP], 
+    [StockData].[Volumne] AS [Volumne]
+    FROM [dbo].[StockData] AS [StockData]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="FK_StockData_Companies" Association="Self.FK_StockData_Companies">
+            <End Role="Companies" EntitySet="Companies" />
+            <End Role="StockData" EntitySet="StockData" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="StockDataModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Company">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="CompanyName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="StockDatas" Relationship="Self.FK_StockData_Companies" FromRole="Companies" ToRole="StockData" />
+        </EntityType>
+        <EntityType Name="StockData">
+          <Key>
+            <PropertyRef Name="CompanyID" />
+            <PropertyRef Name="Date" />
+            <PropertyRef Name="Price" />
+            <PropertyRef Name="OpenP" />
+            <PropertyRef Name="CloseP" />
+            <PropertyRef Name="HighP" />
+            <PropertyRef Name="LowP" />
+            <PropertyRef Name="Volumne" />
+          </Key>
+          <Property Name="CompanyID" Type="Int32" Nullable="false" />
+          <Property Name="Date" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Price" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="OpenP" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="CloseP" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="HighP" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="LowP" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="Volumne" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Company" Relationship="Self.FK_StockData_Companies" FromRole="StockData" ToRole="Companies" />
+        </EntityType>
+        <Association Name="FK_StockData_Companies">
+          <End Role="Companies" Type="Self.Company" Multiplicity="1" />
+          <End Role="StockData" Type="Self.StockData" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Companies">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="StockData">
+              <PropertyRef Name="CompanyID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="StockDataEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Companies" EntityType="Self.Company" />
+          <EntitySet Name="StockDatas" EntityType="Self.StockData" />
+          <AssociationSet Name="FK_StockData_Companies" Association="Self.FK_StockData_Companies">
+            <End Role="Companies" EntitySet="Companies" />
+            <End Role="StockData" EntitySet="StockDatas" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="StockDataModelStoreContainer" CdmEntityContainer="StockDataEntities">
+          <EntitySetMapping Name="Companies">
+            <EntityTypeMapping TypeName="StockDataModel.Company">
+              <MappingFragment StoreEntitySet="Companies">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="CompanyName" ColumnName="CompanyName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="StockDatas">
+            <EntityTypeMapping TypeName="StockDataModel.StockData">
+              <MappingFragment StoreEntitySet="StockData">
+                <ScalarProperty Name="CompanyID" ColumnName="CompanyID" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="OpenP" ColumnName="OpenP" />
+                <ScalarProperty Name="CloseP" ColumnName="CloseP" />
+                <ScalarProperty Name="HighP" ColumnName="HighP" />
+                <ScalarProperty Name="LowP" ColumnName="LowP" />
+                <ScalarProperty Name="Volumne" ColumnName="Volumne" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
